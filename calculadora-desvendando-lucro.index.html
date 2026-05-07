@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Desvendando seu Lucro · CresciMente Negócios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #14191f;
+      font-family: 'Jost', sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px 60px;
+    }
+
+    .calc-wrap {
+      background: #202731;
+      width: 100%;
+      max-width: 580px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    }
+
+    /* ── HEADER ── */
+    .calc-header {
+      background: #202731;
+      padding: 40px 36px 32px;
+      border-bottom: 1px solid rgba(1,171,196,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calc-header::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: rgba(1,171,196,0.06);
+      pointer-events: none;
+    }
+
+    .calc-header::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      background: rgba(1,171,196,0.04);
+      pointer-events: none;
+    }
+
+    .brand-tag {
+      font-size: 10px;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: #01ABC4;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    .calc-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 38px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.12;
+      margin-bottom: 12px;
+    }
+
+    .calc-title span { color: #01ABC4; }
+
+    .calc-subtitle {
+      font-size: 13px;
+      color: #787C85;
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 400px;
+    }
+
+    .progress-bar {
+      display: flex;
+      gap: 6px;
+      margin-top: 28px;
+    }
+
+    .progress-step {
+      height: 3px;
+      flex: 1;
+      border-radius: 2px;
+      background: #4B5056;
+      transition: background 0.4s ease;
+    }
+
+    .progress-step.active { background: #01ABC4; }
+
+    /* ── SECTIONS ── */
+    .section {
+      padding: 32px 36px 0;
+    }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #01ABC4;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .section-desc {
+      font-size: 12px;
+      color: #787C85;
+      font-weight: 300;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ── FIELDS ── */
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field-group label {
+      font-size: 10px;
+      color: #787C85;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .field-group input {
+      background: #2d3540;
+      border: 1px solid #4B5056;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-family: 'Jost', sans-serif;
+      color: #fff;
+      font-weight: 400;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      width: 100%;
+    }
+
+    .field-group input:focus {
+      border-color: #01ABC4;
+      background: #333d4a;
+    }
+
+    .field-group input::placeholder { color: #4B5056; }
+
+    .add-btn {
+      background: none;
+      border: 1px dashed #4B5056;
+      border-radius: 8px;
+      color: #787C85;
+      font-size: 12px;
+      font-family: 'Jost', sans-serif;
+      padding: 9px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      margin-bottom: 4px;
+    }
+
+    .add-btn:hover { border-color: #01ABC4; color: #01ABC4; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 28px 36px 0;
+    }
+
+    /* ── TOTALS ── */
+    .totals-bar {
+      margin: 28px 36px 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    .total-card {
+      background: #2d3540;
+      border-radius: 10px;
+      padding: 16px 18px;
+      border: 1px solid #4B5056;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .total-card.positive {
+      background: rgba(1,171,196,0.1);
+      border-color: rgba(1,171,196,0.35);
+    }
+
+    .total-card.negative {
+      background: rgba(220,60,60,0.1);
+      border-color: rgba(220,60,60,0.35);
+    }
+
+    .total-label {
+      font-size: 9px;
+      color: #787C85;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .total-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .total-card.receita .total-value { color: #01ABC4; }
+    .total-card.negativo .total-value { color: #e05555; }
+    .total-card.positivo .total-value { color: #01ABC4; }
+
+    /* ── DIAGNÓSTICO ── */
+    .diagnostico {
+      margin: 24px 36px 0;
+      background: rgba(1,171,196,0.07);
+      border: 1px solid rgba(1,171,196,0.2);
+      border-radius: 14px;
+      padding: 24px 26px;
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .diagnostico.show { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .diag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(1,171,196,0.15);
+      border: 1px solid rgba(1,171,196,0.3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+      color: #01ABC4;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .diag-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .diag-text {
+      font-size: 13px;
+      color: #c8cdd3;
+      font-weight: 300;
+      line-height: 1.75;
+    }
+
+    /* ── CHECKS ── */
+    .checks-title {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #787C85;
+      margin: 20px 0 10px;
+    }
+
+    .checks {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .check-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 12.5px;
+      color: #787C85;
+      cursor: pointer;
+      transition: color 0.2s;
+      padding: 10px 14px;
+      background: #2d3540;
+      border-radius: 8px;
+      border: 1px solid #4B5056;
+      line-height: 1.5;
+    }
+
+    .check-item input[type="checkbox"] {
+      margin-top: 2px;
+      accent-color: #01ABC4;
+      flex-shrink: 0;
+    }
+
+    .check-item:hover { color: #E6E6E6; border-color: #787C85; }
+
+    /* ── CTA ── */
+    .cta-section {
+      margin: 24px 36px 0;
+      background: #01ABC4;
+      border-radius: 14px;
+      padding: 28px 30px;
+      display: none;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      pointer-events: none;
+    }
+
+    .cta-section::after {
+      content: '';
+      position: absolute;
+      bottom: -30px; left: 60px;
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      pointer-events: none;
+    }
+
+    .cta-section.show { display: block; }
+
+    .cta-tag {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(32,39,49,0.7);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .cta-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: #202731;
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+
+    .cta-text {
+      font-size: 13px;
+      color: #202731;
+      font-weight: 400;
+      line-height: 1.7;
+      margin-bottom: 22px;
+      opacity: 0.82;
+      position: relative;
+    }
+
+    .cta-btn {
+      background: #202731;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 28px;
+      font-size: 13px;
+      font-family: 'Jost', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s, transform 0.15s;
+      position: relative;
+      display: inline-block;
+    }
+
+    .cta-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .cta-btn:active { transform: translateY(0); }
+
+    /* ── FOOTER ── */
+    .footer-brand {
+      text-align: center;
+      margin-top: 32px;
+      padding: 0 36px 4px;
+      font-size: 10px;
+      color: #4B5056;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+    }
+
+    .footer-brand span { color: #01ABC4; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      body { padding: 20px 12px 40px; }
+      .calc-header { padding: 28px 24px 24px; }
+      .calc-title { font-size: 30px; }
+      .section { padding: 24px 24px 0; }
+      .divider { margin: 24px 24px 0; }
+      .totals-bar { margin: 24px 24px 0; gap: 8px; }
+      .total-value { font-size: 18px; }
+      .diagnostico { margin: 20px 24px 0; }
+      .cta-section { margin: 20px 24px 0; }
+      .footer-brand { padding: 0 24px 4px; }
+      .fields-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="calc-wrap">
+
+  <!-- HEADER -->
+  <div class="calc-header">
+    <p class="brand-tag">CresciMente Negócios</p>
+    <h1 class="calc-title">Desvendando<br>seu <span>Lucro</span></h1>
+    <p class="calc-subtitle">Preencha seus números e descubra exatamente onde seu dinheiro está indo — e o que fazer para ele sobrar mais no final do mês.</p>
+    <div class="progress-bar">
+      <div class="progress-step active" id="p1"></div>
+      <div class="progress-step active" id="p2"></div>
+      <div class="progress-step" id="p3"></div>
+    </div>
+  </div>
+
+  <!-- BLOCO 1: RECEITAS -->
+  <div class="section">
+    <p class="section-label">Bloco 1</p>
+    <h2 class="section-title">O que está entrando</h2>
+    <p class="section-desc">Registre todas as suas fontes de receita do mês</p>
+    <div id="receitas-container">
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>Fonte de receita</label>
+          <input type="text" placeholder="Ex: Produto principal" />
+        </div>
+        <div class="field-group">
+          <label>Valor recebido (R$)</label>
+          <input type="number" placeholder="0" class="receita-val" oninput="calcular()" min="0" />
+        </div>
+      </div>
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>Fonte de receita</label>
+          <input type="text" placeholder="Ex: Serviço avulso" />
+        </div>
+        <div class="field-group">
+          <label>Valor recebido (R$)</label>
+          <input type="number" placeholder="0" class="receita-val" oninput="calcular()" min="0" />
+        </div>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addReceita()">+ Adicionar outra receita</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- BLOCO 2A: DESPESAS FIXAS -->
+  <div class="section">
+    <p class="section-label">Bloco 2 — Despesas Fixas</p>
+    <h2 class="section-title">O que sai todo mês</h2>
+    <p class="section-desc">Custos que você tem independente do faturamento</p>
+    <div id="fixas-container">
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>Despesa fixa</label>
+          <input type="text" placeholder="Ex: Aluguel" />
+        </div>
+        <div class="field-group">
+          <label>Valor (R$)</label>
+          <input type="number" placeholder="0" class="despesa-val" oninput="calcular()" min="0" />
+        </div>
+      </div>
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>Despesa fixa</label>
+          <input type="text" placeholder="Ex: Salários / pró-labore" />
+        </div>
+        <div class="field-group">
+          <label>Valor (R$)</label>
+          <input type="number" placeholder="0" class="despesa-val" oninput="calcular()" min="0" />
+        </div>
+      </div>
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>Despesa fixa</label>
+          <input type="text" placeholder="Ex: Ferramentas e sistemas" />
+        </div>
+        <div class="field-group">
+          <label>Valor (R$)</label>
+          <input type="number" placeholder="0" class="despesa-val" oninput="calcular()" min="0" />
+        </div>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addFixa()">+ Adicionar despesa fixa</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- BLOCO 2B: DESPESAS VARIÁVEIS -->
+  <div class="section">
+    <p class="section-label">Bloco 2 — Despesas Variáveis</p>
+    <h2 class="section-title">O que muda com o movimento</h2>
+    <p class="section-desc">Custos que variam conforme as vendas e operação</p>
+    <div id="variaveis-container">
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>Despesa variável</label>
+          <input type="text" placeholder="Ex: Fornecedores / estoque" />
+        </div>
+        <div class="field-group">
+          <label>Valor (R$)</label>
+          <input type="number" placeholder="0" class="despesa-val" oninput="calcular()" min="0" />
+        </div>
+      </div>
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>Despesa variável</label>
+          <input type="text" placeholder="Ex: Marketing e tráfego" />
+        </div>
+        <div class="field-group">
+          <label>Valor (R$)</label>
+          <input type="number" placeholder="0" class="despesa-val" oninput="calcular()" min="0" />
+        </div>
+      </div>
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>Despesa variável</label>
+          <input type="text" placeholder="Ex: Comissões" />
+        </div>
+        <div class="field-group">
+          <label>Valor (R$)</label>
+          <input type="number" placeholder="0" class="despesa-val" oninput="calcular()" min="0" />
+        </div>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addVariavel()">+ Adicionar despesa variável</button>
+  </div>
+
+  <!-- TOTAIS -->
+  <div class="totals-bar">
+    <div class="total-card receita">
+      <p class="total-label">Total Receitas</p>
+      <p class="total-value" id="total-receitas">R$ 0</p>
+    </div>
+    <div class="total-card" id="despesa-card">
+      <p class="total-label">Total Despesas</p>
+      <p class="total-value" id="total-despesas">R$ 0</p>
+    </div>
+    <div class="total-card" id="lucro-card">
+      <p class="total-label">Lucro do Mês</p>
+      <p class="total-value" id="total-lucro">R$ 0</p>
+    </div>
+  </div>
+
+  <!-- DIAGNÓSTICO -->
+  <div class="diagnostico" id="diagnostico">
+    <div class="diag-badge" id="diag-badge">Diagnóstico</div>
+    <h3 class="diag-title" id="diag-title">Seu diagnóstico</h3>
+    <p class="diag-text" id="diag-text"></p>
+
+    <p class="checks-title">Perguntas de reflexão</p>
+    <div class="checks">
+      <label class="check-item">
+        <input type="checkbox" />
+        Esse resultado te surpreendeu?
+      </label>
+      <label class="check-item">
+        <input type="checkbox" />
+        Você sabia exatamente quanto gastava antes de preencher isso?
+      </label>
+      <label class="check-item">
+        <input type="checkbox" />
+        Existe alguma despesa que você poderia cortar ou renegociar agora?
+      </label>
+      <label class="check-item">
+        <input type="checkbox" />
+        Tem receita que você deixou de cobrar ou receber esse mês?
+      </label>
+      <label class="check-item">
+        <input type="checkbox" />
+        Seu pró-labore está dentro do que você precisa para viver?
+      </label>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section" id="cta-section">
+    <p class="cta-tag">Próximo passo</p>
+    <h3 class="cta-title">Você mapeou.<br>Agora é hora de agir.</h3>
+    <p class="cta-text">Esse número revela muito sobre a saúde do seu negócio. O próximo passo é construir um plano real para o lucro sobrar — todo mês, de forma previsível. Me chama para uma conversa.</p>
+    <!--
+      IMPORTANTE: Substitua o número abaixo pelo seu WhatsApp
+      Formato: 55 + DDD + número (sem espaços ou traços)
+      Exemplo: https://wa.me/5521999999999
+    -->
+    <a href="https://wa.me/SEU_NUMERO_AQUI" target="_blank" style="text-decoration:none;">
+      <button class="cta-btn">Conversar com a Rafaela →</button>
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <p class="footer-brand"><span>Cresci</span>Mente · Gestão Empresarial &amp; Negócios</p>
+
+</div>
+
+<script>
+  function fmt(v) {
+    return 'R$ ' + Math.abs(v).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  function calcular() {
+    var recVals = document.querySelectorAll('.receita-val');
+    var despVals = document.querySelectorAll('.despesa-val');
+    var totalR = 0, totalD = 0;
+
+    recVals.forEach(function(i) { totalR += parseFloat(i.value) || 0; });
+    despVals.forEach(function(i) { totalD += parseFloat(i.value) || 0; });
+
+    var lucro = totalR - totalD;
+
+    document.getElementById('total-receitas').textContent = fmt(totalR);
+    document.getElementById('total-despesas').textContent = fmt(totalD);
+    document.getElementById('total-lucro').textContent = (lucro < 0 ? '- ' : '') + fmt(lucro);
+
+    var lucroCard = document.getElementById('lucro-card');
+    lucroCard.className = 'total-card';
+    if (lucro > 0) lucroCard.classList.add('positivo');
+    else if (lucro < 0) lucroCard.classList.add('negativo');
+
+    if (totalR > 0 || totalD > 0) {
+      document.getElementById('p3').classList.add('active');
+      document.getElementById('diagnostico').classList.add('show');
+      document.getElementById('cta-section').classList.add('show');
+
+      var margem = totalR > 0 ? (lucro / totalR * 100) : (lucro < 0 ? -100 : 0);
+      var titulo, texto, badge;
+
+      if (lucro < 0) {
+        badge = '⚠ Atenção';
+        titulo = 'Você está operando no negativo';
+        texto = 'Suas despesas estão superando sua receita em ' + fmt(Math.abs(lucro)) + '. Isso não é um problema de vendas — é um sinal de que algo na estrutura de custos precisa ser revisto com urgência. Antes de tentar vender mais, você precisa entender o que está consumindo seu resultado.';
+      } else if (margem < 15) {
+        badge = '🔎 Diagnóstico';
+        titulo = 'Você fatura, mas o lucro some';
+        texto = 'Sua margem está em ' + margem.toFixed(0) + '% — abaixo do ideal. Isso significa que a maior parte do que entra já está comprometida antes mesmo de você perceber. O problema quase nunca é vender mais. Quase sempre é uma questão de gestão.';
+      } else if (margem < 30) {
+        badge = '📈 Em crescimento';
+        titulo = 'Resultado positivo — mas dá pra ir além';
+        texto = 'Você está no positivo com margem de ' + margem.toFixed(0) + '%. É um bom começo. Agora a pergunta é: esse número é previsível todo mês? Existe uma estratégia por trás dele ou ele oscila muito? É hora de consolidar e escalar com intencionalidade.';
+      } else {
+        badge = '✓ Boa margem';
+        titulo = 'Base sólida — agora é hora de proteger e escalar';
+        texto = 'Sua margem está em ' + margem.toFixed(0) + '%. Você tem uma base financeira saudável. O desafio agora é manter esse resultado com consistência, ter clareza estratégica e criar liberdade real no negócio — sem depender só de você para tudo funcionar.';
+      }
+
+      document.getElementById('diag-badge').textContent = badge;
+      document.getElementById('diag-title').textContent = titulo;
+      document.getElementById('diag-text').textContent = texto;
+    }
+  }
+
+  function addRow(containerId, labelTexto, cls) {
+    var c = document.getElementById(containerId);
+    var d = document.createElement('div');
+    d.className = 'fields-grid';
+    d.innerHTML =
+      '<div class="field-group">' +
+        '<label>' + labelTexto + '</label>' +
+        '<input type="text" placeholder="..." />' +
+      '</div>' +
+      '<div class="field-group">' +
+        '<label>Valor (R$)</label>' +
+        '<input type="number" placeholder="0" class="' + cls + '" oninput="calcular()" min="0" />' +
+      '</div>';
+    c.appendChild(d);
+  }
+
+  function addReceita()  { addRow('receitas-container', 'Fonte de receita', 'receita-val'); }
+  function addFixa()     { addRow('fixas-container', 'Despesa fixa', 'despesa-val'); }
+  function addVariavel() { addRow('variaveis-container', 'Despesa variável', 'despesa-val'); }
+</script>
+
+</body>
+</html>
